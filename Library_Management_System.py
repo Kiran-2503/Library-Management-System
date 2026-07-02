@@ -61,16 +61,46 @@ def draw_menu(title, options, width=54):
 # ==========================
 
 def manager_login():
-    pin=int(input("Enter the PIN to login = "))
+    clear_screen()
+    draw_box("MANAGER AUTHENTICATION")
+    try:
+        pin = int(input("Enter the PIN to login: "))
+        if pin == MANAGER_PIN:
+            manager_menu()
+        else:
+             print("\n❌ Invalid PIN..!!")
+             input("\nPress Enter to return...")
 
-    if pin == MANAGER_PIN:
-        manager_menu()
-    else:
-        print("Invalid PIN..!!")
-
+    except ValueError:
+        print("\n⚠️ Numbers only! Invalid input.")
+        input("\nPress Enter to return...")
 
 def manager_menu():
-    print("This is manager menu (trail)")
+    while True:
+        clear_screen()
+        options = [
+            "1. Add User", "2. Remove User", "3. View All Users",
+            "4. Add Book", "5. Remove Book", "6. View All Books",
+            "7. Search Book", "8. View Transaction History", "9. Logout"
+        ]
+        draw_menu("MANAGER CONTROL DASHBOARD", options)
+        try:
+            choice = int(input("Enter your choice: "))
+            if choice == 1: add_user()
+            elif choice == 2: remove_user()
+            elif choice == 3: view_users()
+            elif choice == 4: add_book()
+            elif choice == 5: remove_book()
+            elif choice == 6: view_books()
+            elif choice == 7: search_book()
+            elif choice == 8: view_transaction_history()
+            elif choice == 9: break
+            else:
+                print("❌ Invalid Choice..!!")
+                input("Press Enter to retry...")
+        except ValueError:
+            print("⚠️ Numbers only! Invalid input.")
+            input("Press Enter to retry...")
 
 def add_user():
     pass
@@ -119,8 +149,6 @@ def return_book():
 def view_my_history():
     pass
 
-def border():
-    print("---------------------------------------------")
 
 # ==========================
 # Main Function
@@ -130,29 +158,25 @@ def main():
     
     while True:
 
-        border()
+        
         print("1.Library Manager")
         print("2.User")
         print("3.Exit")
-        border()
 
         choice=int(input("Enter you choice: "))
-        border()
+        
 
         if choice == 1:
             manager_login()
 
         elif choice == 2:
-            border()
             user_login()
 
         elif choice == 3:
             print("Thank you for using the Library management system.")
-            border()
             break
         
         else:
-            border()
             print("Invalid Choice..!!")
 
 # ==========================
