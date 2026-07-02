@@ -1,1 +1,1 @@
-transaction_id,user_id,book_code,action,date
+Transaction_ID,User_ID,Book_Code,Issue_Date,Return_Date,Status
