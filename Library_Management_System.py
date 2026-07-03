@@ -103,13 +103,66 @@ def manager_menu():
             input("Press Enter to retry...")
 
 def add_user():
-    pass
+    clear_screen()
+    draw_box("ADD NEW USER")
+    uid = input("Enter unique User ID: ").strip().upper()
+    
+    # To Check if user already exists
+    with open(USERS_FILE, mode='r', encoding='utf-8') as f:
+        if any(row[0] == uid for row in csv.reader(f)):
+            draw_box("⚠️ USER ID ALREADY EXISTS..!!")
+            input("\nPress Enter to return...")
+            return
+        
+    name = input("Enter User Name: ").strip()
+    if uid and name:
+        with open(USERS_FILE, mode='a', newline='', encoding='utf-8') as f:
+            csv.writer(f).writerow([uid, name])
+        print("✅ User registered successfully!")
+    else:
+        draw_box("⚠️ User Name cannot be empty..!!")
+    input("\nPress Enter to return...")
 
 def remove_user():
-    pass
+    clear_screen()
+    draw_box("REMOVE USER REGISTRATION")
+    uid = input("Enter User ID to delete: ").strip()
+    updated_rows = []
+    found = False
+    
+    with open(USERS_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        updated_rows.append(headers)
+        for row in reader:
+            if row[0] == uid:
+                found = True
+            else:
+                updated_rows.append(row)
+                
+    if found:
+        with open(USERS_FILE, mode='w', newline='', encoding='utf-8') as f:
+            csv.writer(f).writerows(updated_rows)
+        print("✅ User removed successfully!")
+    else:
+        print("❌ User ID not found.")
+    input("\nPress Enter to return...")
 
 def view_users():
-    pass
+    clear_screen()
+    draw_box("REGISTERED SYSTEM USERS")
+    with open(USERS_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        next(reader) 
+        print(f"{'User ID':<15} | {'User Name':<30}")
+        print("-" * 48)
+        count = 0
+        for row in reader:
+            print(f"{row[0]:<15} | {row[1]:<30}")
+            count += 1
+    if count == 0:
+        print("No users registered yet.")
+    input("\nPress Enter to return...")
 
 def add_book():
     pass
