@@ -165,19 +165,153 @@ def view_users():
     input("\nPress Enter to return...")
 
 def add_book():
-    pass
+    clear_screen()
+    draw_box("ADD BOOK TO INVENTORY")
+    bid = input("Enter Book ID (ISBN/Serial): ").strip().upper()
+    
+    rows = []
+    found = False
+    with open(BOOKS_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        rows.append(headers)
+        for row in reader:
+            if row[0] == bid:
+                found = True
+                try:
+                    qty = int(input(f"Book exists. Current stock: {row[4]}. Add how many? "))
+                    row[4] = str(int(row[4]) + qty)
+                except ValueError:
+                    print("⚠️ Invalid number. Aborting stock addition.")
+                    input("\nPress Enter to return...")
+                    return
+            rows.append(row)
+            
+    if found:
+        with open(BOOKS_FILE, mode='w', newline='', encoding='utf-8') as f:
+            csv.writer(f).writerows(rows)
+        print("✅ Stock updated successfully!")
+    else:
+        title = input("Enter Book Title: ").strip()
+        author = input("Enter Author Name: ").strip()
+        year = int(input("Enter Publication Year: "))
+        try:
+            qty = int(input("Enter Quantity: "))
+            if bid and title and author and year and qty >= 0:
+                with open(BOOKS_FILE, mode='a', newline='', encoding='utf-8') as f:
+                    csv.writer(f).writerow([bid, title, author, year, qty])
+                print("✅ New book indexed successfully!")
+            else:
+                print("⚠️ Invalid fields.")
+        except ValueError:
+            print("⚠️ Invalid quantity number.")
+    input("\nPress Enter to return...")
 
 def remove_book():
-    pass
+    clear_screen()
+    draw_box("REMOVE BOOK INDEX")
+    bid = input("Enter Book ID to delete completely: ").strip().upper()
+    updated_rows = []
+    found = False
+    
+    with open(BOOKS_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        updated_rows.append(headers)
+        for row in reader:
+            if row[0] == bid:
+                found = True
+            else:
+                updated_rows.append(row)
+                
+    if found:
+        with open(BOOKS_FILE, mode='w', newline='', encoding='utf-8') as f:
+            csv.writer(f).writerows(updated_rows)
+        print("✅ Book removed Successfully! ")
+    else:
+        print("❌ Book ID not found.")
+    input("\nPress Enter to return...")
 
 def view_books():
-    pass
+    clear_screen()
+    draw_box("LIBRARY CATALOG")
+    with open(BOOKS_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        next(reader)
+        print(f"{'Book id':<12} | {'Title':<25} | {'Author':<20} | {'Year':<6} | {'Qty':<5}")
+        print("-" * 88)
+        count = 0
+        for row in reader:
+            print(f"{row[0]:<12} | {row[1]:<25}|{row[2]:<20}|{row[3]:<6}|{row[4]:<5}")
+            count += 1
+        draw_box(f"TOTAL BOOKS : {count}")
+
+    if count == 0:
+        print("NO BOOKS AVALIABLE")
+    input("\nPress Enter to return...")
 
 def search_book():
-    pass
+    clear_screen()
+    draw_box("SEARCH BOOK")
 
+    query = input("Enter Book ID, Title or Author: ").strip().lower()
+
+    with open(BOOKS_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        next(reader)
+
+        print(f"{'Book ID':<12} | {'Title':<25} | {'Author':<20} | {'Year':<6} | {'Qty':<5}")
+        print("-" * 88)
+
+        found = False
+        count = 0
+
+        for row in reader:
+            if (query in row[0].lower() or query in row[1].lower()  or query in row[2].lower()):
+                print(f"{'Book ID':<12} | {'Title':<25} | {'Author':<20} | {'Year':<6} | {'Qty':<5}")
+                found = True
+                count += 1
+
+        if not found:
+            draw_box("BOOK NOT FOUND")
+        else:
+            print("-" * 88)
+            print(f"Search Results : {count}")
+
+    input("\nPress Enter to return...")
+
+    
 def view_transaction_history():
-    pass
+    clear_screen()
+    draw_box("TRANSACTION HISTORY")
+
+    with open(HISTORY_FILE, mode='r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        next(reader)
+
+        print(f"{'Trans ID':<10} | {'User ID':<10} | {'Book ID':<12} | {'Issue Date':<12} | {'Return Date':<12} | {'Status':<10}")
+        print("-" * 85)
+
+        count = 0
+
+        for row in reader:
+            print(
+                f"{row[0]:<10} | "
+                f"{row[1]:<10} | "
+                f"{row[2]:<12} | "
+                f"{row[3]:<12} | "
+                f"{row[4]:<12} | "
+                f"{row[5]:<10}"
+            )
+            count += 1
+
+    if count == 0:
+        draw_box("NO TRANSACTION HISTORY FOUND")
+    else:
+        print("-" * 85)
+        print(f"Total Transactions : {count}")
+
+    input("\nPress Enter to return...")
 
 
 # ==========================
